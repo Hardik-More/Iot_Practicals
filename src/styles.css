@@ -407,6 +407,7 @@ button {
   line-height: 1.7;
   font-size: 12px;
   tab-size: 4;
+  white-space: pre;
 }
 
 .code-block code {
@@ -457,6 +458,7 @@ button {
 .step-heading h3 {
   font-size: 14px;
   color: #31516e;
+  line-height: 1.5;
 }
 
 .step-number {
@@ -480,29 +482,39 @@ button {
   color: #80652d;
   border-radius: 3px;
   font-size: 12px;
+  line-height: 1.7;
 }
 
-/* OUTPUT TABLE */
+/* DATA TABLES */
 
-.output-table-wrapper {
+.data-table-wrapper {
+  width: 100%;
   overflow-x: auto;
+  margin: 15px 0;
 }
 
-.output-table {
+.data-table {
   width: 100%;
   border-collapse: collapse;
+  background: #ffffff;
 }
 
-.output-table th {
+.data-table th {
   background: #eaf3ff;
   color: #31516e;
+  font-weight: 700;
 }
 
-.output-table td,
-.output-table th {
+.data-table td,
+.data-table th {
   padding: 12px;
   border: 1px solid #dce4ed;
   text-align: left;
+  vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+  background: #f5f9ff;
 }
 
 /* HDFS COMMAND TABLE */
@@ -576,6 +588,7 @@ button {
   background: #ffffff;
   color: #9aa6b3;
   font-size: 11px;
+  line-height: 1.6;
 }
 
 /* RESPONSIVE */
@@ -668,5 +681,19 @@ button {
 
   .full-card {
     grid-column: auto;
+  }
+
+  .content-section,
+  .hdfs-section {
+    padding: 14px;
+  }
+
+  .step-heading {
+    align-items: flex-start;
+  }
+
+  .code-block pre {
+    font-size: 11px;
+    padding: 13px;
   }
 }

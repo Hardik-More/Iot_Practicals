@@ -41,10 +41,96 @@ function CodeBlock({ title, code }) {
         <span>{title}</span>
         <CopyButton code={code} />
       </div>
-      <pre>
-        <code>{code}</code>
-      </pre>
+      <pre><code>{code}</code></pre>
     </div>
+  );
+}
+
+function DataTable({ data }) {
+  if (!data?.length) return null;
+
+  return (
+    <div className="data-table-wrapper">
+      <table className="data-table">
+        <thead>
+          <tr>
+            {data[0].map((heading, index) => (
+              <th key={index}>{heading}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.slice(1).map((row, index) => (
+            <tr key={index}>
+              {row.map((cell, cellIndex) => (
+                <td key={cellIndex}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function ProcedureContent({ procedure }) {
+  return (
+    <section className="content-section">
+      <h2>Procedure</h2>
+
+      {procedure?.map((step, index) => {
+        if (typeof step === "string") {
+          return (
+            <div className="crud-step" key={index}>
+              <div className="step-heading">
+                <span className="step-number">{index + 1}</span>
+                <h3>{step}</h3>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="crud-step" key={index}>
+            <div className="step-heading">
+              <span className="step-number">{index + 1}</span>
+              <h3>{step.title}</h3>
+            </div>
+
+            {step.description && <p>{step.description}</p>}
+
+            {step.commands?.map((command, commandIndex) => (
+              <CodeBlock
+                key={commandIndex}
+                title={`Command ${commandIndex + 1}`}
+                code={command}
+              />
+            ))}
+
+            {step.code && (
+              <CodeBlock
+                title="File Content / Source Code"
+                code={step.code}
+              />
+            )}
+
+            {step.table && <DataTable data={step.table} />}
+
+            {step.note && (
+              <div className="step-note">{step.note}</div>
+            )}
+
+            {step.verify?.map((command, verifyIndex) => (
+              <CodeBlock
+                key={verifyIndex}
+                title={`Verification ${verifyIndex + 1}`}
+                code={command}
+              />
+            ))}
+          </div>
+        );
+      })}
+    </section>
   );
 }
 
@@ -149,54 +235,7 @@ function App() {
 
       case "Procedure":
         return (
-          <section className="content-section">
-            <h2>Procedure</h2>
-
-            {experiment.procedureOnly
-              ? experiment.procedure.map((step, index) => (
-                  <div className="crud-step" key={index}>
-                    <div className="step-heading">
-                      <span className="step-number">
-                        {index + 1}
-                      </span>
-                      <h3>{step.title}</h3>
-                    </div>
-
-                    {step.description && (
-                      <p>{step.description}</p>
-                    )}
-
-                    {step.commands?.map((command, i) => (
-                      <CodeBlock
-                        key={i}
-                        title={`Command ${i + 1}`}
-                        code={command}
-                      />
-                    ))}
-
-                    {step.note && (
-                      <div className="step-note">
-                        {step.note}
-                      </div>
-                    )}
-
-                    {step.verify?.map((command, i) => (
-                      <CodeBlock
-                        key={i}
-                        title={`Verification ${i + 1}`}
-                        code={command}
-                      />
-                    ))}
-                  </div>
-                ))
-              : (
-                <ol className="procedure-list">
-                  {experiment.procedure?.map((step, index) => (
-                    <li key={index}>{step}</li>
-                  ))}
-                </ol>
-              )}
-          </section>
+          <ProcedureContent procedure={experiment.procedure} />
         );
 
       case "Terminal Commands":
@@ -247,8 +286,8 @@ function App() {
 
             <h2 className="output-heading">Expected Output</h2>
 
-            <div className="output-table-wrapper">
-              <table className="output-table">
+            <div className="data-table-wrapper">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>Word</th>
@@ -304,18 +343,13 @@ function App() {
                     <th>Copy</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {experiment.commands?.map((item) => (
                     <tr key={item.no}>
                       <td>{item.no}</td>
-                      <td>
-                        <code>{item.command}</code>
-                      </td>
+                      <td><code>{item.command}</code></td>
                       <td>{item.purpose}</td>
-                      <td>
-                        <CopyButton code={item.command} />
-                      </td>
+                      <td><CopyButton code={item.command} /></td>
                     </tr>
                   ))}
                 </tbody>
@@ -388,7 +422,6 @@ function App() {
                 onClick={() => open(item)}
               >
                 <span className="file-icon">▤</span>
-
                 <span className="experiment-name">
                   <strong>
                     {String(item.id).padStart(2, "0")}.
@@ -399,9 +432,7 @@ function App() {
             ))}
 
             {filteredExperiments.length === 0 && (
-              <p className="no-results">
-                No experiments found.
-              </p>
+              <p className="no-results">No experiments found.</p>
             )}
           </div>
 
@@ -418,7 +449,6 @@ function App() {
                   <div className="eyebrow">
                     EXPERIMENT {String(experiment.id).padStart(2, "0")}
                   </div>
-
                   <h1>{experiment.title}</h1>
                   <p>{experiment.subtitle}</p>
                 </div>
@@ -443,7 +473,7 @@ function App() {
           </div>
 
           <footer className="main-footer">
-            BDA Practical Library · Hadoop · MapReduce · Python · MongoDB
+            BDA Practical Library · Hadoop · MapReduce · Python · MongoDB · Mahout · Hive · Pig
           </footer>
         </main>
       </div>
